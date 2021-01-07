@@ -19,21 +19,19 @@ String.prototype.toHtml = function () {
 'hello world'.toHtml();
 
 class PseudoHTML {
-    /**
-     * @type {string}
-     */
+    /** @type {string} */
     tag;
 
-    /**
-     * @type {Array<PseudoHTML>}
-     */
+    /** @type {Array<PseudoHTML>} */
     children = [];
 
-    /**
-     * @type {PseudoHTML | undefined}
-     */
+    /** @type {PseudoHTML | undefined} */
     parent;
 
+    /**
+     * @param {string} tag 
+     * @param {PseudoHTML | undefined} parent 
+     */
     constructor(tag, parent) {
         this.tag = tag;
         this.parent = parent;
@@ -78,6 +76,11 @@ function stringToPseudoHTML(str) {
             // add {}
             if (element.charAt(1) === '(') {
                 let pseudoHtmls = stringToPseudoHTML(element.substring(2, element.length-1));
+                if (pseudoHtmls.length < 1) {
+                    throw new EmmetStringParsingError('Error parsing with brackets (I guess, it\'s because of there are empty brackets)');
+                } else {
+                    currentElement = pseudoHtmls[0];
+                }
                 for (const addedElement of pseudoHtmls) {
                     addedElement.parent = parent;
                     parent.children.push(addedElement);
@@ -88,7 +91,7 @@ function stringToPseudoHTML(str) {
                 currentElement = newElement;
             }
         }  else {
-            // throw an error
+            throw new EmmetStringParsingError('Incorrect first symbol');
         }
     }
 
@@ -162,3 +165,9 @@ function getFirstOccurenceOfSpecialCharacter(str) {
 
 
 TEST(stringToPseudoHTML);
+
+class EmmetStringParsingError extends Error { };
+
+
+// TODO: store index of string to print understandable errors
+

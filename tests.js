@@ -9,6 +9,7 @@ const tests = [
     'div1>div2>div3>div4^^div5',
     'div1>div2^div3',
     'div1>(div2+div3>div4)^div7',
+    'div>(header>ul>li*2>a)+footer>p'
 ];
 
 function TEST(funcToTest) {
