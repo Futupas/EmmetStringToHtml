@@ -32,7 +32,7 @@ function pseudoHtmlStructureToString(pseudoHtml, level) {
     for (const element of pseudoHtml) {
         let tabStr = '';
         for (let i = 0; i < level; i-=-1) tabStr += '|  ';
-        returnedStr += `${tabStr}+ <${element.tag}> Parent=${element.parent && element.parent.tag}\n`;
+        returnedStr += `${tabStr}+ <${element.tag}> Parent=${element.parent && `<${element.parent.tag}>`}\n`;
         returnedStr += pseudoHtmlStructureToString(element.children, level+1);
     }
     return returnedStr;

@@ -41,7 +41,7 @@ class PseudoHTML {
 }
 
 /**
- * 
+ * Main function at the moment
  * @param {string} str 
  * @returns {Array<PseudoHTML>}
  */
@@ -58,20 +58,11 @@ function stringToPseudoHTML(str) {
 
     for (const celement of splitted) {
         let element = celement;
+        let parent = currentElement.parent;
         // check changing levels
         if (element.startsWith('>')) {
-            if (element.charAt(1) === '(') {
-                let pseudoHtmls = stringToPseudoHTML(element.substring(2, element.length-1));
-                for (const addedElement of pseudoHtmls) {
-                    addedElement.parent = currentElement;
-                    currentElement.children.push(addedElement);
-                }
-                // currentElement = newElement; (?)
-            } else {
-                let newElement = new PseudoHTML(element.substring(1), currentElement.parent);
-                currentElement.children.push(newElement);
-                currentElement = newElement;
-            }
+            parent = currentElement;
+            element = '+' + element.substring(1);
         } else if (element.startsWith('^')) {
             // if level is maksimum up, throw an error
             while (element.startsWith('^')) {
@@ -87,12 +78,12 @@ function stringToPseudoHTML(str) {
             if (element.charAt(1) === '(') {
                 let pseudoHtmls = stringToPseudoHTML(element.substring(2, element.length-1));
                 for (const addedElement of pseudoHtmls) {
-                    addedElement.parent = currentElement.parent;
-                    currentElement.parent.children.push(addedElement);
+                    addedElement.parent = parent;
+                    parent.children.push(addedElement);
                 }
             } else {
-                let newElement = new PseudoHTML(element.substring(1), currentElement.parent);
-                currentElement.parent.children.push(newElement);
+                let newElement = new PseudoHTML(element.substring(1), parent);
+                parent.children.push(newElement);
                 currentElement = newElement;
             }
         }  else {
