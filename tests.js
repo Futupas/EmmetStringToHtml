@@ -15,6 +15,25 @@ function TEST(funcToTest) {
     for (const test of tests) {
         console.log(test);
         let result = funcToTest(test);
-        console.log(result);
+        // console.log(result);
+        console.log(pseudoHtmlStructureToString(result));
+        console.log('');
     }
+}
+
+/**
+ * 
+ * @param {Array<PseudoHTML>} pseudoHtml
+ * @returns {string}
+ */
+function pseudoHtmlStructureToString(pseudoHtml, level) {
+    let returnedStr = '';
+    if (level === undefined) level = 0;
+    for (const element of pseudoHtml) {
+        let tabStr = '';
+        for (let i = 0; i < level; i-=-1) tabStr += '|  ';
+        returnedStr += `${tabStr}+ <${element.tag}> Parent=${element.parent && element.parent.tag}\n`;
+        returnedStr += pseudoHtmlStructureToString(element.children, level+1);
+    }
+    return returnedStr;
 }
