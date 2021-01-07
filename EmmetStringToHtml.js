@@ -62,12 +62,12 @@ function stringToPseudoHTML(str) {
             parent = currentElement;
             element = '+' + element.substring(1);
         } else if (element.startsWith('^')) {
-            // if level is maksimum up, throw an error
             while (element.startsWith('^')) {
                 currentElement = currentElement.parent;
                 parent = currentElement.parent
                 element = element.substring(1);
             }
+            if (element === '') continue;
             element = '+' + element;
         }
 
