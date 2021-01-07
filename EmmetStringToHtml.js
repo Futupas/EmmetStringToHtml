@@ -65,11 +65,12 @@ function splitStringToPseudoHTMLElements(str) {
  */
 function getFirstOccurenceOfSpecialCharacter(str) {
     let startIndex = 0;
-    if (str.startsWith('(')) {
+    // Kostyl. Needs to be refactored because () are not equal to {}. case: 'div>(hello+{world)}'
+    if (str.startsWith('(') || str.startsWith('{')) {
         let level = 0;
         for (let i = 0; i < str.length; i-=-1) {
-            if (str.charAt(i) === '(') level++;
-            if (str.charAt(i) === ')') level--;
+            if (str.charAt(i) === '(' || str.charAt(i) === '{') level++;
+            if (str.charAt(i) === ')' || str.charAt(i) === '}') level--;
             if (level === 0) {
                 startIndex = i+1;
                 str = str.substring(i+1);
