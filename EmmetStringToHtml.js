@@ -5,7 +5,7 @@
  * @param {string} emmet 
  * @returns {Array<HTMLElement>}
  */
-function EmmetToHTML(emmet) {
+function emmetToHTML(emmet) {
 
 }
 
@@ -13,7 +13,7 @@ function EmmetToHTML(emmet) {
  * @returns {Array<HTMLElement>}
  */
 String.prototype.toHtml = function () {
-    return EmmetToHTML(this);
+    return emmetToHTML(this);
 }
 
 'hello world'.toHtml();
@@ -73,7 +73,6 @@ function stringToPseudoHTML(str) {
 
         // one level
         if (element.startsWith('+')) {
-            // add {}
             if (element.charAt(1) === '(') {
                 let pseudoHtmls = stringToPseudoHTML(element.substring(2, element.length-1));
                 if (pseudoHtmls.length < 1) {
@@ -100,10 +99,6 @@ function stringToPseudoHTML(str) {
     }
 
     return pseudoParent.children;
-}
-
-function a(str) {
-    return splitStringToPseudoHTMLElements(str);
 }
 
 /**
@@ -140,15 +135,19 @@ function getFirstOccurenceOfSpecialCharacter(str) {
     // Kostyl. Needs to be refactored because () are not equal to {}. case: 'div>(hello+{world)}'
     if (str.startsWith('(') || str.startsWith('{')) {
         let level = 0;
+        let curlyBrackets = false;
         for (let i = 0; i < str.length; i-=-1) {
-            if (str.charAt(i) === '(' || str.charAt(i) === '{') level++;
-            if (str.charAt(i) === ')' || str.charAt(i) === '}') level--;
+            if (str.charAt(i) === '{') curlyBrackets = true;
+            if (str.charAt(i) === '}') curlyBrackets = false;
+            if (str.charAt(i) === '(' && !curlyBrackets) level++;
+            if (str.charAt(i) === ')' && !curlyBrackets) level--;
             if (level === 0) {
                 startIndex = i+1;
                 str = str.substring(i+1);
                 break;
             }
         }
+        // Check here if allright (level === 0)
     }
     let indexOfPlus = str.indexOf('+');
     let indexOfNesting = str.indexOf('>');

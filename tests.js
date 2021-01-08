@@ -11,6 +11,9 @@ const tests = [
     'div1>(div2+div3>div4)^div7',
     'div>(header>ul>li*2>a)+footer>p',
     'div>header>ul>li*2>a+footer>p',
+    'div>{hello}>world',
+    'div>(hi+bro>iii)>dddd', // Must be exception. Can not nest in brackets (or not?)
+    'div>(hi+bro>iii)+(fi>{item)))})',
 ];
 
 function TEST(funcToTest) {
