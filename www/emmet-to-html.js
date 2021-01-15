@@ -1,1 +1,216 @@
-(()=>{"use strict";var t={797:function(t,r,e){var n,i=this&&this.__extends||(n=function(t,r){return(n=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,r){t.__proto__=r}||function(t,r){for(var e in r)Object.prototype.hasOwnProperty.call(r,e)&&(t[e]=r[e])})(t,r)},function(t,r){function e(){this.constructor=t}n(t,r),t.prototype=null===r?Object.create(r):(e.prototype=r.prototype,new e)});Object.defineProperty(r,"__esModule",{value:!0}),r.makePseudoHtml=void 0;var o=e(314);function s(t){var r=function(t){for(var r=[],e="+",n=a(t);!1!==n&&t.length>0;){var i=e+t.substring(0,n);r.push(i),e=t.charAt(n),n=a(t=t.substring(n+1))}return r.push(e+t),r}(t),e=new o.PseudoHTML("PSEUDO_PARENT",void 0);e.parent=e;for(var n=e,i=0,c=r;i<c.length;i++){var h=c[i],f=n.parent;if(h.startsWith(">"))f=n,h="+"+h.substring(1);else if(h.startsWith("^")){for(;h.startsWith("^");)f=(n=n.parent).parent,h=h.substring(1);if(""===h)continue;h="+"+h}if(!h.startsWith("+"))throw new u("Incorrect first symbol");if("("===h.charAt(1)){var p=s(h.substring(2,h.length-1));if(p.length<1)throw new u("Error parsing with brackets (I guess, it's because of there are empty brackets)");n=p[0];for(var l=0,v=p;l<v.length;l++){var d=v[l];d.parent=f,f.children.push(d)}}else{var g=new o.PseudoHTML(h.substring(1),f);f.children.push(g),n=g}}for(var b=0,_=e.children;b<_.length;b++)_[b].parent=void 0;return e.children}function a(t){var r=0;if(t.startsWith("(")||t.startsWith("{"))for(var e=0,n=!1,i=0;i<t.length;i-=-1)if("{"===t.charAt(i)&&(n=!0),"}"===t.charAt(i)&&(n=!1),"("!==t.charAt(i)||n||e++,")"!==t.charAt(i)||n||e--,0===e){r=i+1,t=t.substring(i+1);break}var o=t.indexOf("+"),s=t.indexOf(">"),a=t.indexOf("^");return(-1!==o||-1!==s||-1!==a)&&(-1===o&&(o=Math.max(s,a)),-1===s&&(s=Math.max(o,a)),-1===a&&(a=Math.max(o,s)),Math.min(o,s,a)+r)}r.makePseudoHtml=function(t){return s(t)};var u=function(t){function r(){return null!==t&&t.apply(this,arguments)||this}return i(r,t),r}(Error)},105:(t,r)=>{Object.defineProperty(r,"__esModule",{value:!0}),r.prepareString=void 0,r.prepareString=function(t){return t}},314:(t,r)=>{Object.defineProperty(r,"__esModule",{value:!0}),r.PseudoHTML=void 0;r.PseudoHTML=function(t,r){this.tag=t,this.parent=r,this.children=[]}},607:(t,r,e)=>{e(797),e(105)}},r={};!function e(n){if(r[n])return r[n].exports;var i=r[n]={exports:{}};return t[n].call(i.exports,i,i.exports,e),i.exports}(607)})();
+
+    // Remove this method later
+    function emmetToPseudoHTML(emmetString) {
+        'use strict';
+
+        /*! *****************************************************************************
+        Copyright (c) Microsoft Corporation.
+    
+        Permission to use, copy, modify, and/or distribute this software for any
+        purpose with or without fee is hereby granted.
+    
+        THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+        REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+        AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+        INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+        LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+        OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+        PERFORMANCE OF THIS SOFTWARE.
+        ***************************************************************************** */
+        /* global Reflect, Promise */
+    
+        var extendStatics = function(d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+    
+        function __extends(d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        }
+    
+        var PseudoHTML = /** @class */ (function () {
+            function PseudoHTML(tag, parent) {
+                this.tag = tag;
+                this.parent = parent;
+                this.children = [];
+            }
+            return PseudoHTML;
+        }());
+    
+        /**
+         * Main function at the moment
+         * @param str
+         * @returns
+         */
+        function stringToPseudoHTML(str) {
+            var splitted = splitStringToPseudoHTMLElements(str);
+            var pseudoParent = new PseudoHTML('PSEUDO_PARENT', undefined);
+            // Very good kostyl
+            pseudoParent.parent = pseudoParent;
+            var currentElement = pseudoParent;
+            for (var _i = 0, splitted_1 = splitted; _i < splitted_1.length; _i++) {
+                var celement = splitted_1[_i];
+                var element = celement;
+                var parent_1 = currentElement.parent;
+                // check changing levels
+                if (element.startsWith('>')) {
+                    parent_1 = currentElement;
+                    element = '+' + element.substring(1);
+                }
+                else if (element.startsWith('^')) {
+                    while (element.startsWith('^')) {
+                        currentElement = currentElement.parent;
+                        parent_1 = currentElement.parent;
+                        element = element.substring(1);
+                    }
+                    if (element === '')
+                        continue;
+                    element = '+' + element;
+                }
+                // one level
+                if (element.startsWith('+')) {
+                    if (element.charAt(1) === '(') {
+                        var pseudoHtmls = stringToPseudoHTML(element.substring(2, element.length - 1));
+                        if (pseudoHtmls.length < 1) {
+                            throw new EmmetStringParsingError('Error parsing with brackets (I guess, it\'s because of there are empty brackets)');
+                        }
+                        else {
+                            currentElement = pseudoHtmls[0];
+                        }
+                        for (var _a = 0, pseudoHtmls_1 = pseudoHtmls; _a < pseudoHtmls_1.length; _a++) {
+                            var addedElement = pseudoHtmls_1[_a];
+                            addedElement.parent = parent_1;
+                            parent_1.children.push(addedElement);
+                        }
+                    }
+                    else {
+                        var newElement = new PseudoHTML(element.substring(1), parent_1);
+                        parent_1.children.push(newElement);
+                        currentElement = newElement;
+                    }
+                }
+                else {
+                    throw new EmmetStringParsingError('Incorrect first symbol');
+                }
+            }
+            for (var _b = 0, _c = pseudoParent.children; _b < _c.length; _b++) {
+                var el = _c[_b];
+                el.parent = undefined;
+            }
+            return pseudoParent.children;
+        }
+        /**
+         *
+         * @param str
+         * @returns
+         */
+        function splitStringToPseudoHTMLElements(str) {
+            var resultArr = [];
+            var symbol = '+';
+            var firstOccurence = getFirstOccurenceOfSpecialCharacter(str);
+            while (firstOccurence !== false && str.length > 0) {
+                var tag = symbol + str.substring(0, firstOccurence);
+                resultArr.push(tag);
+                symbol = str.charAt(firstOccurence);
+                str = str.substring(firstOccurence + 1);
+                firstOccurence = getFirstOccurenceOfSpecialCharacter(str);
+            }
+            resultArr.push(symbol + str);
+            return resultArr;
+        }
+        /**
+         * If string starts with round bracket, it returns first occurence out of brackets
+         * @param str
+         * @returns false if nothing found
+         */
+        function getFirstOccurenceOfSpecialCharacter(str) {
+            var startIndex = 0;
+            // Kostyl. Needs to be refactored because () are not equal to {}. case: 'div>(hello+{world)}'
+            if (str.startsWith('(') || str.startsWith('{')) {
+                var level = 0;
+                var curlyBrackets = false;
+                for (var i = 0; i < str.length; i -= -1) {
+                    if (str.charAt(i) === '{')
+                        curlyBrackets = true;
+                    if (str.charAt(i) === '}')
+                        curlyBrackets = false;
+                    if (str.charAt(i) === '(' && !curlyBrackets)
+                        level++;
+                    if (str.charAt(i) === ')' && !curlyBrackets)
+                        level--;
+                    if (level === 0) {
+                        startIndex = i + 1;
+                        str = str.substring(i + 1);
+                        break;
+                    }
+                }
+                // Check here if allright (level === 0)
+            }
+            var indexOfPlus = str.indexOf('+');
+            var indexOfNesting = str.indexOf('>');
+            var indexOfUp = str.indexOf('^');
+            if (indexOfPlus === -1 && indexOfNesting === -1 && indexOfUp === -1)
+                return false;
+            if (indexOfPlus === -1)
+                indexOfPlus = Math.max(indexOfNesting, indexOfUp);
+            if (indexOfNesting === -1)
+                indexOfNesting = Math.max(indexOfPlus, indexOfUp);
+            if (indexOfUp === -1)
+                indexOfUp = Math.max(indexOfPlus, indexOfNesting);
+            return Math.min(indexOfPlus, indexOfNesting, indexOfUp) + startIndex;
+        }
+        var EmmetStringParsingError = /** @class */ (function (_super) {
+            __extends(EmmetStringParsingError, _super);
+            function EmmetStringParsingError() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            return EmmetStringParsingError;
+        }(Error));
+    
+        /**
+         *
+         * @param notPreparedString
+         * @returns
+         */
+        function prepareString(notPreparedString) {
+            // TODO make this method
+            /*
+            1. All '\specialcharacter' replace with appropriate &... (https://www.w3schools.com/html/html_symbols.asp)
+            1.1. Special characters: >{}()[]"'\+^
+            2. Everything inside {} replace also (it's just text)
+            3. Maybe, there's something else, but now it's enough
+            */
+            return notPreparedString;
+        }
+    
+        // String.prototype.toHtml = function () {
+        //     return emmetToHTML(this);
+        // }
+        // To make library https://aganglada.com/blog/how-to-create-your-own-typescript-library
+        function emmetToHTML(emmetString) {
+            var preparedString = prepareString(emmetString);
+            var pseudoHtml = makePseudoHtml(preparedString);
+            // Make real html from pseudoHtml
+            // Catch errors
+            return [new HTMLDivElement()];
+        }
+        function appendEmmet(emmetString, container) {
+            var elements = emmetToHTML(emmetString);
+            elements.forEach(function (el) {
+                container.appendChild(el);
+            });
+        }
+        function makePseudoHtml(str) {
+            return stringToPseudoHTML(str);
+        }
+        var preparedString = prepareString(emmetString);
+        var pseudoHtml = makePseudoHtml(preparedString);
+
+
+        
+        return pseudoHtml;
+    }

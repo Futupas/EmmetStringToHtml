@@ -1,7 +1,6 @@
 import { makePseudoHtml } from './MakePseudoHtml';
 import { PseudoHTML } from './PseudoHTML';
 import { prepareString } from './PrepareEmmetString';
-// import { PseudoHTML } from './PseudoHTML';
 
 // String.prototype.toHtml = function () {
 //     return emmetToHTML(this);
@@ -17,6 +16,7 @@ export function emmetToHTML(emmetString: string): HTMLElement[] {
     return [ new HTMLDivElement() ];
 }
 
+// Remove this method later
 export function emmetToPseudoHTML(emmetString: string): PseudoHTML[] {
     const preparedString = prepareString(emmetString);
     const pseudoHtml = makePseudoHtml(preparedString);

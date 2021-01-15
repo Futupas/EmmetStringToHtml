@@ -9,11 +9,19 @@ export default [
     //     },
     //     plugins: [typescript()],
     // },
+    // {
+    //     input: './src/index.ts',
+    //     output: {
+    //         file: './www/emmet-to-html.c.js',
+    //         format: 'cjs',
+    //     },
+    //     plugins: [typescript()],
+    // },
     {
         input: './src/index.ts',
         output: {
-            file: './www/index.js',
-            format: 'cjs',
+            file: './www/emmet-to-html.js',
+            format: 'iife',
         },
         plugins: [typescript()],
     },
